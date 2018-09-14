@@ -1,4 +1,4 @@
-from __future__ import division, print_function
+
 
 __author__    = 'Maximilian Bisani'
 __version__   = '$LastChangedRevision: 1691 $'
@@ -37,6 +37,7 @@ from sequitur import Translator
 from Evaluation import Evaluator
 from tool import UsageError
 import sys
+import collections.abc
 
 class OnlineTester(object):
     def __init__(self, name, sample):
@@ -91,7 +92,7 @@ class Tool:
 
         if self.options.fixed_discount:
             discount = eval(self.options.fixed_discount)
-            if not operator.isSequenceType(discount):
+            if not isinstance(discount, collections.abc.Sequence):
                 discount = [discount]
             discount = num.array(discount)
         else:

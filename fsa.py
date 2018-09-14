@@ -96,7 +96,7 @@ def writeAsFsa(model, xml, shouldMakeClosure = True):
 	currentId = idMap[current]
 	left, right, current = current
 
-	currentDesc = map(sq.symbol, sm.historyAsTuple(current))
+	currentDesc = list(map(sq.symbol, sm.historyAsTuple(current)))
 	currentDesc = [''.join(ll) + ':' + '_'.join(rr)
 		       for ll, rr in currentDesc ]
 	if left or right:

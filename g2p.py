@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import print_function
+
 """
 Grapheme-to-Phoneme Conversion
 
@@ -142,7 +142,7 @@ def mainTest(translator, testSample, options):
     if options.test_segmental:
         supraSegmental = set(['.', "'", '"'])
         def removeSupraSegmental(phon):
-            return filter(lambda p: p not in supraSegmental, phon)
+            return [p for p in phon if p not in supraSegmental]
         evaluator.compareFilter = removeSupraSegmental
     result = evaluator.evaluate(translator)
     print(result)

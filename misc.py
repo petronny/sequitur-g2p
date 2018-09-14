@@ -1,5 +1,5 @@
-from __future__ import division
-from __future__ import print_function
+
+
 
 __author__    = 'Maximilian Bisani'
 __version__   = '$LastChangedRevision: 1691 $'
@@ -50,7 +50,7 @@ else:
     set = set
 
 if sys.version_info[:2] >= (3, 0):
-    unicode = None
+    str = None
     object_or_InstanceType = object
 else:
     import types
@@ -68,7 +68,7 @@ def meminfo():
         data = open('/proc/%d/statm' % pid).read()
     except:
         raise NotImplementedError
-    data = map(int, data.split())
+    data = list(map(int, data.split()))
     size, resident, shared, trs, drs, lrs, dt = tuple(data)
     return size * pageSize, resident * pageSize
 
@@ -114,7 +114,7 @@ class MemoryProfiler:
         pythonObjectHead = 4 + 8
         valuators = {
             str:     lambda s: len(s),
-            unicode: lambda u: 2 * len(u),
+            str: lambda u: 2 * len(u),
             list:    lambda l: 4+8 + 8 * len(l),
             tuple:   lambda t: 4   + 8 * len(t),
             dict:    lambda d:      16 * len(d),
@@ -151,11 +151,11 @@ class MemoryProfiler:
             yield self.Record(item, '%s[%d]' % (current.path, index))
 
     def inspectDict(self, current):
-        for key, value in current.object.iteritems():
+        for key, value in current.object.items():
             yield self.Record(value, '%s[%s]' % (current.path, repr(key)))
 
     def inspectInstance(self, current):
-        for key, value in current.object.__dict__.iteritems():
+        for key, value in current.object.__dict__.items():
             if type(key) is not str:
                 continue
             yield self.Record(value, '%s.%s' % (current.path, key))
@@ -174,7 +174,7 @@ class MemoryProfiler:
         }
 
     def report(self, out):
-        records = self.records.values()
+        records = list(self.records.values())
         records.sort(key = lambda rec: rec.path)
         sum = 0
         for record in records:
@@ -188,12 +188,12 @@ class MemoryProfiler:
 
     def reportByType(self, out):
         recordsByType = {}
-        for record in self.records.itervalues():
+        for record in self.records.values():
             if record.type not in recordsByType:
                 recordsByType[record.type] = []
             recordsByType[record.type].append(record)
 
-        typesAndClasses = recordsByType.keys()
+        typesAndClasses = list(recordsByType.keys())
         typesAndClasses.sort()
         for typeOrClass in typesAndClasses:
             records = recordsByType[typeOrClass]

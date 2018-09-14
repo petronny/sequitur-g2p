@@ -1,5 +1,5 @@
-from __future__ import division
-from __future__ import print_function
+
+
 
 __author__    = 'Maximilian Bisani'
 __version__   = '$LastChangedRevision: 1668 $'
@@ -140,7 +140,7 @@ class BackOffModel:
         self.prob[key] = value
 
     def __iter__(self):
-        return self.prob.iteritems()
+        return iter(self.prob.items())
 
     def perplexity(self, evidence):
         total = 0.0
@@ -155,7 +155,7 @@ class BackOffModel:
             self.inventory = inventory
             data = []
             if inventory is None:
-                for (history, predicted), probability in self.prob.iteritems():
+                for (history, predicted), probability in self.prob.items():
                     try:
                         data.append((history, predicted, - math.log(probability)))
                     except (ValueError, OverflowError):
@@ -163,7 +163,7 @@ class BackOffModel:
                             print('SequenceModel.py:116: cannot take logarithm of zero probability', \
                                   history, predicted, probability)
             else:
-                for (history, predicted), probability in self.prob.iteritems():
+                for (history, predicted), probability in self.prob.items():
                     history = tuple(map(inventory.index, history))
                     if predicted is not None: predicted = inventory.index(predicted)
                     data.append((history, predicted, - math.log(probability)))
@@ -175,8 +175,8 @@ class BackOffModel:
         return self.compiled
 
     def showMostProbable(self, f, inventory, limit = None):
-        sample = [ (probability, inventory(predicted), map(inventory, history))
-                   for (history, predicted), probability in self.prob.iteritems()
+        sample = [ (probability, inventory(predicted), list(map(inventory, history)))
+                   for (history, predicted), probability in self.prob.items()
                    if predicted is not None ]
         sample.sort()
         sample.reverse()
@@ -194,7 +194,7 @@ class BackOffModel:
 
     def rampUp(self):
         newHistories = set()
-        for (history, predicted), probability in self.prob.iteritems():
+        for (history, predicted), probability in self.prob.items():
             if predicted is None: continue
             newHistory = history + (predicted,)
             if (newHistory, None) not in self.prob:
@@ -285,7 +285,7 @@ class SequenceModel(sequitur_.SequenceModel):
         return len(self.get())
 
     def showMostProbable(self, f, inventory, limit = None):
-        sample = [ (math.exp(-score), inventory(predicted), map(inventory, history))
+        sample = [ (math.exp(-score), inventory(predicted), list(map(inventory, history)))
                    for history, predicted, score in self.get()
                    if predicted is not None ]
         sample.sort()

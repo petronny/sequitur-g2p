@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 __author__    = 'Maximilian Bisani'
 __version__   = '$LastChangedRevision: 1691 $'
 __date__      = '$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $'
@@ -36,8 +36,8 @@ class SequenceModelTestCase(unittest.TestCase):
         sm = SequenceModel.SequenceModel()
         h = sm.initial()
         for t in range(10):
-            self.failUnlessEqual(sm.advanced(h, t), h)
-            self.failUnlessEqual(sm.probability(t, h), 0.0)
+            self.assertEqual(sm.advanced(h, t), h)
+            self.assertEqual(sm.probability(t, h), 0.0)
 
     def testZerogram(self):
         p = 0.1
@@ -47,8 +47,8 @@ class SequenceModelTestCase(unittest.TestCase):
         sm.set(data)
         h = sm.initial()
         for t in range(10):
-            self.failUnlessEqual(sm.advanced(h, t), h)
-            self.failUnlessAlmostEqual(sm.probability(t, h), p)
+            self.assertEqual(sm.advanced(h, t), h)
+            self.assertAlmostEqual(sm.probability(t, h), p)
 
     def testUnigram(self):
         probs = [ 0.2, 0.3, 0.5 ]
@@ -58,8 +58,8 @@ class SequenceModelTestCase(unittest.TestCase):
         sm.set(data)
         h = sm.initial()
         for t in range(1, 4):
-            self.failUnlessEqual(sm.advanced(h, t), h)
-            self.failUnlessAlmostEqual(sm.probability(t, h), probs[t-1])
+            self.assertEqual(sm.advanced(h, t), h)
+            self.assertAlmostEqual(sm.probability(t, h), probs[t-1])
 
     def testBigram(self):
         probs = [ 0.2, 0.3, 0.5 ]
@@ -73,13 +73,13 @@ class SequenceModelTestCase(unittest.TestCase):
         h2 = sm.advanced(h, 2)
         for t in range(1, 4):
             if t == 2:
-                self.failUnlessEqual(sm.advanced(h, t), h2)
-                self.failUnlessEqual(sm.advanced(h2, t), h2)
+                self.assertEqual(sm.advanced(h, t), h2)
+                self.assertEqual(sm.advanced(h2, t), h2)
             else:
-                self.failUnlessEqual(sm.advanced(h, t), h)
-                self.failUnlessEqual(sm.advanced(h2, t), h)
-            self.failUnlessAlmostEqual(sm.probability(t, h), probs[t-1])
-            self.failUnlessAlmostEqual(sm.probability(t, h2), probs2[t-1])
+                self.assertEqual(sm.advanced(h, t), h)
+                self.assertEqual(sm.advanced(h2, t), h)
+            self.assertAlmostEqual(sm.probability(t, h), probs[t-1])
+            self.assertAlmostEqual(sm.probability(t, h2), probs2[t-1])
 
 
 class EstimatorTestCase(unittest.TestCase):
@@ -101,7 +101,7 @@ class EstimatorTestCase(unittest.TestCase):
         sample = Sample(self.sequitur, sizeTemplates, EstimationGraphBuilder.emergeNewMultigrams, [], model)
         evidence, logLik = sample.evidence(model, useMaximumApproximation=False)
         evidence = evidence.asList()
-        self.failUnlessEqual(evidence, [])
+        self.assertEqual(evidence, [])
 
     def testMonograms(self):
         sizeTemplates = [(1,1), (1,0), (0,1)]
@@ -113,14 +113,14 @@ class EstimatorTestCase(unittest.TestCase):
         evidence = evidence.asList()
         for hist, seg, p in evidence:
             l, r = self.sequitur.symbol(seg)
-            self.failUnless(len(l) in range(2))
-            self.failUnless(len(r) in range(2))
+            self.assertTrue(len(l) in range(2))
+            self.assertTrue(len(r) in range(2))
             if l == ('__term__',) and r == ('__term__',):
-                self.failUnlessAlmostEqual(p, 3.0)
+                self.assertAlmostEqual(p, 3.0)
             elif len(l) == 1 and len(r) == 1:
-                self.failUnlessAlmostEqual(p, 0.6)
+                self.assertAlmostEqual(p, 0.6)
             else:
-                self.failUnlessAlmostEqual(p, 0.4)
+                self.assertAlmostEqual(p, 0.4)
 
     def testAbcMonoGrams(self):
         return
@@ -129,10 +129,10 @@ class EstimatorTestCase(unittest.TestCase):
         estm.setLengthConstraints(0, 1, 0, 1)
         estm.addSample(['a', 'b', 'c'], ['A', 'B', 'C'])
         evidence = estm.estimate()
-        self.failUnlessEqual(len(evidence), (1+3)**2)
+        self.assertEqual(len(evidence), (1+3)**2)
         for hist, (l, r), p in evidence:
-            self.failUnless(len(l) in range(2))
-            self.failUnless(len(r) in range(2))
+            self.assertTrue(len(l) in range(2))
+            self.assertTrue(len(r) in range(2))
 
     def testAbcDiGrams(self):
         return
@@ -141,10 +141,10 @@ class EstimatorTestCase(unittest.TestCase):
         estm.setLengthConstraints(0, 2, 0, 2)
         estm.addSample(['a', 'b', 'c'], ['A', 'B', 'C'])
         evidence = estm.estimate()
-        self.failUnlessEqual(len(evidence), (1+3+2)**2)
+        self.assertEqual(len(evidence), (1+3+2)**2)
         for hist, (l, r), p in evidence:
-            self.failUnless(len(l) in range(3))
-            self.failUnless(len(r) in range(3))
+            self.assertTrue(len(l) in range(3))
+            self.assertTrue(len(r) in range(3))
 
     def testAbcTriGrams(self):
         return
@@ -155,11 +155,11 @@ class EstimatorTestCase(unittest.TestCase):
         for i in range(5):
             print('\n', i)
             evidence = estm.estimate()
-            self.failUnlessEqual(len(evidence), (1+3+2+1)**2)
+            self.assertEqual(len(evidence), (1+3+2+1)**2)
             evidence.sort(lambda a, b: cmp(a[-1], b[-1]))
             for hist, (l, r), p in evidence:
-                self.failUnless(len(l) in range(4))
-                self.failUnless(len(r) in range(4))
+                self.assertTrue(len(l) in range(4))
+                self.assertTrue(len(r) in range(4))
                 print(l, r, p)
             estm.reestimate()
 

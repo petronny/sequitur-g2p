@@ -53,7 +53,7 @@ def addUnknowns(model, words):
     unknownWords = words - knownWords
     for word in unknownWords:
 	i = model.sequitur.index((word,), (word,))
-    print >> sys.stderr, '%d unknown words added to model' % len(unknownWords)
+    print('%d unknown words added to model' % len(unknownWords), file=sys.stderr)
 
 # ===========================================================================
 def main(options, args):
@@ -67,9 +67,9 @@ def main(options, args):
 	    left = tuple(line.split())
 	    try:
 		result = translator(left)
-		print ' '.join(result)
+		print(' '.join(result))
 	    except translator.TranslationFailure:
-		print '<translation-failed/>'
+		print('<translation-failed/>')
 
 # ===========================================================================
 if __name__ == '__main__':

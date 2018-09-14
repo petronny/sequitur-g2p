@@ -14,7 +14,7 @@ Ported to Python by Maximilian Bisani
 (bisani@informatik.rwth-aachen.de) on 23 July 2003
 """
 
-from __future__ import division
+
 
 __author__    = 'Maximilian Bisani'
 __version__   = '$LastChangedRevision: 1668 $'
@@ -47,6 +47,7 @@ __all__ = [ 'simpleGoodTuring' ]
 
 
 import math, operator, sys
+from functools import reduce
 
 
 def sum(l):
@@ -159,7 +160,7 @@ def main(args):
     data = [ (int(r), int(n)) for r, n in data ]
     sgt = simpleGoodTuring(data)
     for r, p, np, rStar in sgt:
-	print r, p, np, rStar
+	print(r, p, np, rStar)
 
 
 if __name__ == '__main__':

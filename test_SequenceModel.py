@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 __author__    = 'Maximilian Bisani'
 __version__   = '$LastChangedRevision: 1667 $'
 __date__      = '$LastChangedDate: 2007-06-02 16:32:35 +0200 (Sat, 02 Jun 2007) $'
@@ -43,7 +43,7 @@ class SequenceModelEstimatorTestCase(unittest.TestCase):
                     sum += p
 #               print u, v, sum
 #               print
-                self.failUnlessAlmostEqual(sum, 1.0)
+                self.assertAlmostEqual(sum, 1.0)
 
     def testEmpty(self):
         evidence = []

@@ -1,5 +1,5 @@
-from __future__ import division
-from __future__ import print_function
+
+
 
 __author__    = 'Maximilian Bisani'
 __version__   = '$LastChangedRevision: 1691 $'
@@ -112,7 +112,7 @@ class Model(object):
                                  self.sequitur.rightInventory)
         data = []
         for history, predicted, score in self.sequenceModel.get():
-            history = map(oldSequitur.inventory.symbol, history)
+            history = list(map(oldSequitur.inventory.symbol, history))
             history = tuple(map(self.sequitur.inventory.index, history))
             if predicted is not None:
                 predicted = oldSequitur.inventory.symbol(predicted)
@@ -693,7 +693,7 @@ class ModelTemplate:
 
     def checkpoint(self, context):
         print('checkpointing', file=context.log)
-        import cPickle as pickle
+        import pickle as pickle
         fname = self.checkpointFile % context.iteration
         f = open(fname, 'wb')
         pickle.dump((self, context), f, pickle.HIGHEST_PROTOCOL)
@@ -809,7 +809,7 @@ class Segmenter:
             exc = sys.exc_info()[1]
             raise self.SegmentationFailure(*exc.args)
         assert joint[-1] == self.sequitur.term
-        joint = map(self.sequitur.inventory.symbol, joint[:-1])
+        joint = list(map(self.sequitur.inventory.symbol, joint[:-1]))
         joint = [ (self.sequitur.leftInventory.format(left),
                    self.sequitur.rightInventory.format(right))
                   for left, right in joint ]
